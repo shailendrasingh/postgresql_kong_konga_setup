@@ -25,9 +25,12 @@ services:
 
   kong-migrations:
     image: kong:latest
+    container_name: kong-migrations
     environment:
       KONG_DATABASE: postgres
       KONG_PG_HOST: kong-db
+      KONG_PG_DATABASE: api-gw
+      KONG_PG_USER: kong
       KONG_PG_PASSWORD: kong123
       KONG_CASSANDRA_CONTACT_POINTS: kong-db
     command: kong migrations bootstrap
@@ -64,8 +67,6 @@ services:
       KONG_ADMIN_ERROR_LOG:  /dev/stderr
       KONG_PROXY_LISTEN:     0.0.0.0:8000, 0.0.0.0:8443 ssl
       KONG_ADMIN_LISTEN:     0.0.0.0:8001, 0.0.0.0:8444 ssl
-  
-  
   konga:
     image: pantsel/konga
     ports:
@@ -74,7 +75,6 @@ services:
       - kong
     depends_on:
       - kong-db
-      - kong
     networks:
       - kong-net
     container_name: konga
